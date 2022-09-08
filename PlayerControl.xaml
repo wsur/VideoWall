@@ -1,0 +1,81 @@
+﻿<UserControl x:Class="Player_v2.PlayerControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Player_v2"
+             mc:Ignorable="d" 
+              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <Style x:Key="baseButton" TargetType="Button">
+            <Setter Property="FontFamily" Value="Verdana"/>
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+        <Style x:Key="RoundCorner" BasedOn="{StaticResource baseButton}" TargetType="{x:Type Button}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border x:Name="Border" CornerRadius="8" BorderBrush="Blue"  BorderThickness="2" Background="#FFFFF8FF" Margin="0,0,8,0" >
+                            <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          TextElement.FontWeight="Light">
+                            </ContentPresenter>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Padding" Value="5"/>
+        </Style>
+    </UserControl.Resources>
+
+    <UserControl.DataContext>
+        <local:PlayerViewModel/>
+    </UserControl.DataContext>
+    
+    <Grid x:Name="PlayerGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="0.25*"/>
+        </Grid.RowDefinitions>
+        <Viewbox Grid.Row="0" Name="ViewVideo">
+            <MediaElement x:Name="Videoplayer" 
+                          Source="{Binding PlayerPath, UpdateSourceTrigger=PropertyChanged}"
+                          Visibility="{Binding VideoVisible, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
+                          IsEnabled="{Binding VideoEnable, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
+                          LoadedBehavior="{Binding VideoState, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}">
+                <!--Пишем атрибуты отдельно, т.к. они занимают много места-->
+            </MediaElement>
+        </Viewbox>
+        <TextBox  x:Name="Text1"  MaxLength="250" TextAlignment="Center"  FontSize="20" 
+                 Width="{Binding ElementName=PlayerGrid, Path=ActualWidth}" Height="40" HorizontalAlignment="Center" 
+                 ToolTip="Введите сюда путь до видео"
+                 Text="{Binding PlayerPath, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}"
+                 Visibility="{Binding TextVisible, UpdateSourceTrigger=PropertyChanged}" 
+                 IsEnabled="{Binding TextEnable, UpdateSourceTrigger=PropertyChanged}" />
+        <Button x:Name="Button1" Style="{StaticResource RoundCorner}" Height="40" VerticalAlignment="Bottom"
+                FontSize="20" 
+                Command="{Binding AddCommandButton, UpdateSourceTrigger=PropertyChanged}" Margin="5,0,0,5"
+                Visibility="{Binding ButtonVisible, UpdateSourceTrigger=PropertyChanged}"
+                IsEnabled="{Binding ButtonEnable, UpdateSourceTrigger=PropertyChanged}">Подтвердить</Button>
+        <Viewbox  Grid.Row="1" HorizontalAlignment="Left">
+            <StackPanel Orientation="Horizontal" FlowDirection="LeftToRight">
+                <Button MinWidth="5" Style="{StaticResource RoundCorner}" HorizontalAlignment="Left" x:Name="ButtonPlay"
+                        Command="{Binding AddCommandButtonPlay, UpdateSourceTrigger=PropertyChanged}"
+                        Visibility="{Binding ButtonPlayVisible, UpdateSourceTrigger=PropertyChanged}"
+                        IsEnabled="{Binding ButtonPlayEnable, UpdateSourceTrigger=PropertyChanged}">
+                    <Image Source="/images/play.png" />
+                </Button>
+                <Button MinWidth="5" Style="{StaticResource RoundCorner}" x:Name="ButtonStop"
+                        Command="{Binding AddCommandButtonStop, UpdateSourceTrigger=PropertyChanged}"
+                        Visibility="{Binding ButtonStopVisible, UpdateSourceTrigger=PropertyChanged}"
+                        IsEnabled="{Binding ButtonStopEnable, UpdateSourceTrigger=PropertyChanged}">
+                    <Image Source="images/stop.png" />
+                </Button>
+            </StackPanel>
+        </Viewbox>
+    </Grid>
+</UserControl>
